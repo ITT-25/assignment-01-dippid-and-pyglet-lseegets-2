@@ -1,9 +1,8 @@
 from pyglet import shapes
 
-class Segment:
+# Segment class representing one segment of the snake
 
-    prev_x = 0
-    prev_y = 0
+class Segment:
 
     def __init__(self, x, y, color=(0, 255, 0)):
         self.prev_x = x
