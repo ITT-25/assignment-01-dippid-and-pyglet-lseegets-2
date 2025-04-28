@@ -21,7 +21,7 @@ def move_fruit():
     fruit.y = random.randint(0, WINDOW_HEIGHT - BUFFER)
 
 
-# Add a new segment to the snake. Choose the last segment's previous position as position for the new segment
+# Add a new segment to the snake. Set the last segment's previous position as position for the new segment
 
 def add_segment():
     head = game.segments[0]
@@ -87,9 +87,11 @@ def on_key_press(symbol, modifiers):
 @win.event
 def on_draw():
     win.clear()
+    
     if game.game_over:
         game.draw_game_over_screen()
     else:
+        pyglet.text.Label(f'Score: {game.score}', font_name='Courier New', font_size=20, x=WINDOW_WIDTH-80, y=WINDOW_HEIGHT-30, anchor_x='center').draw()
         fruit.draw()
         for segment in game.segments:
             segment.shape.draw()
