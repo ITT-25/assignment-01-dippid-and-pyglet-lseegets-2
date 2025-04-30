@@ -3,9 +3,8 @@ from pyglet import window, shapes, clock
 import random
 
 from segment import Segment
-from game_manager import Game
+from game_manager import Game, sensor
 from utils import WINDOW_WIDTH, WINDOW_HEIGHT, SEGMENT_WIDTH, BUFFER
-
 
 # Initialize Game
 
@@ -87,13 +86,21 @@ def on_key_press(symbol, modifiers):
 @win.event
 def on_draw():
     win.clear()
-    
-    if game.game_over:
-        game.draw_game_over_screen()
+
+    if not game.has_started:
+        game.draw_start_game_screen()
     else:
-        pyglet.text.Label(f'Score: {game.score}', font_name='Courier New', font_size=20, x=WINDOW_WIDTH-80, y=WINDOW_HEIGHT-30, anchor_x='center').draw()
-        fruit.draw()
-        for segment in game.segments:
-            segment.shape.draw()
+        if game.game_over:
+            game.draw_game_over_screen()
+        else:
+            pyglet.text.Label(f'Score: {game.score}', font_name='Courier New', font_size=20, x=WINDOW_WIDTH-80, y=WINDOW_HEIGHT-30, anchor_x='center').draw()
+            fruit.draw()
+            for segment in game.segments:
+                segment.shape.draw()
+
+sensor.register_callback('accelerometer', game.handle_tilt)
+sensor.register_callback('button_1', game.handle_button_press)
+sensor.register_callback('button_2', game.handle_button_press)
+sensor.register_callback('button_3', game.handle_button_press)
 
 pyglet.app.run()
