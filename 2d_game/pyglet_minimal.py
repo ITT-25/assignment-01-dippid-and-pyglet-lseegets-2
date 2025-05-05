@@ -16,8 +16,8 @@ fruit = shapes.Rectangle(random.randint(0, WINDOW_WIDTH - BUFFER), random.randin
 # Move the fruit to a random position. Providing an interval for randrange ensures the fruit stays on the grid
 
 def move_fruit():
-    fruit.x = random.randrange(0, WINDOW_WIDTH - BUFFER, OBJ_WIDTH)
-    fruit.y = random.randrange(0, WINDOW_HEIGHT - BUFFER, OBJ_WIDTH)
+    fruit.x = random.randrange(BUFFER, WINDOW_WIDTH - BUFFER, OBJ_WIDTH)
+    fruit.y = random.randrange(BUFFER, WINDOW_HEIGHT - BUFFER, OBJ_WIDTH)
 
 
 # Add a new segment to the snake. Set the last segment's previous position as position for the new segment
@@ -32,6 +32,8 @@ def add_segment():
         y = head.prev_y
     game.segments.append(Segment(x, y))
 
+    if len(game.segments) == (WINDOW_WIDTH - BUFFER) // OBJ_WIDTH:
+        game.won = True
 
 # Move the entire snake: Move the head a set distance. Set each subsequent segment's position to the previous position of
 # the previous segment
@@ -74,8 +76,9 @@ def check_collision():
             game.game_over = True
 
 def update(dt):
-    move()
-    check_collision()
+    if not game.game_over and not game.won:
+        move()
+        check_collision()
 
 clock.schedule_interval(update, 0.1)
 
@@ -92,6 +95,8 @@ def on_draw():
     else:
         if game.game_over:
             game.draw_game_over_screen()
+        elif game.won:
+            game.draw_winning_screen()
         else:
             pyglet.text.Label(f'Score: {game.score}', font_name='Courier New', font_size=20, x=WINDOW_WIDTH-80, y=WINDOW_HEIGHT-30, anchor_x='center').draw()
             fruit.draw()
