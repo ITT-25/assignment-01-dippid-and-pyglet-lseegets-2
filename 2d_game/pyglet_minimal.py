@@ -4,7 +4,7 @@ import random
 
 from segment import Segment
 from game_manager import Game, sensor
-from utils import WINDOW_WIDTH, WINDOW_HEIGHT, SEGMENT_WIDTH, BUFFER
+from utils import WINDOW_WIDTH, WINDOW_HEIGHT, OBJ_WIDTH, SEGMENT_WIDTH, BUFFER
 
 # Initialize Game
 
@@ -13,11 +13,11 @@ game = Game()
 fruit = shapes.Rectangle(random.randint(0, WINDOW_WIDTH - BUFFER), random.randint(0, WINDOW_HEIGHT - BUFFER), SEGMENT_WIDTH, SEGMENT_WIDTH, (255, 255, 0))
 
 
-# Move the fruit to a random position
+# Move the fruit to a random position. Providing an interval for randrange ensures the fruit stays on the grid
 
 def move_fruit():
-    fruit.x = random.randint(0, WINDOW_WIDTH - BUFFER)
-    fruit.y = random.randint(0, WINDOW_HEIGHT - BUFFER)
+    fruit.x = random.randrange(0, WINDOW_WIDTH - BUFFER, OBJ_WIDTH)
+    fruit.y = random.randrange(0, WINDOW_HEIGHT - BUFFER, OBJ_WIDTH)
 
 
 # Add a new segment to the snake. Set the last segment's previous position as position for the new segment
@@ -33,15 +33,15 @@ def add_segment():
     game.segments.append(Segment(x, y))
 
 
-# Move the entire snake. Move the head a set distance. Set each subsequent segment's position to the previous position of
+# Move the entire snake: Move the head a set distance. Set each subsequent segment's position to the previous position of
 # the previous segment
 
 def move():
     head = game.segments[0]
     if game.direction == 'x':
-        head.update_position(head.shape.x + SEGMENT_WIDTH  * game.factor, head.shape.y)
+        head.update_position(head.shape.x + OBJ_WIDTH * game.factor, head.shape.y)
     elif game.direction == 'y':
-        head.update_position(head.shape.x, head.shape.y + SEGMENT_WIDTH  * game.factor)
+        head.update_position(head.shape.x, head.shape.y + OBJ_WIDTH  * game.factor)
 
     if len(game.segments) > 1:
         game.segments[1].update_position(head.prev_x, head.prev_y)
@@ -62,8 +62,8 @@ def check_collision():
         game.score += 10
         add_segment()
     
-    if (head.shape.x <= 0 or head.shape.x + SEGMENT_WIDTH >= WINDOW_WIDTH or
-        head.shape.y <= 0 or head.shape.y + SEGMENT_WIDTH >= WINDOW_HEIGHT):
+    if (head.shape.x <= 0 or head.shape.x + OBJ_WIDTH >= WINDOW_WIDTH or
+        head.shape.y <= 0 or head.shape.y + OBJ_WIDTH >= WINDOW_HEIGHT):
         game.game_over = True
 
     for segment in game.segments[2:]:
