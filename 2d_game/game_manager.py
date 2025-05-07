@@ -23,6 +23,9 @@ class Game:
         self.direction = 'x'
         self.score = 0
 
+
+    # Key controls (for debugging)
+
     def on_key_press(self, symbol, modifiers):
         if symbol == key.A:
             self.factor = -1
@@ -36,8 +39,10 @@ class Game:
         if symbol == key.S:
             self.factor = -1
             self.direction = 'y'
-        if symbol == key.SPACE and self.game_over:
+        if symbol == key.SPACE and (self.game_over or self.won):
             self.reset_game()
+        if symbol == key.SPACE and not self.has_started:
+            self.has_started = True
 
     def handle_tilt(self, data):
         if sensor.has_capability('accelerometer'):
